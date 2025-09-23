@@ -4,12 +4,20 @@ Save approximation set.
 
 import numpy as np
 import matplotlib.pyplot as plt
+import hashlib
+import os
 
-def saveApproximationSet(A, algorithm, problem, run, mode='save_all'):
+DIR = 'Results/Approximations/'
+
+def saveApproximationSet(A, algorithm, problem, run, seq_file, mode='save_all'):
     """Draws and saves a given approximation set"""
-    N,m = np.shape(A)
+    N,m = np.shape(A)   
+    name, _ = os.path.splitext(seq_file)
+    md5_hash = hashlib.md5(name.encode()).hexdigest()
+    fname_prefix = algorithm+'_'+problem+'_{0:0=2d}D'.format(m)+'_'+md5_hash+'_R{0:0=2d}'.format(run)
     if mode == 'save_txt':
-        np.savetxt('Results/Approximations/'+algorithm+'_'+problem+'_{0:0=2d}D'.format(m)+'_R{0:0=2d}'.format(run)+'.pof', A, fmt='%.6e', header=str(N)+' '+str(m))
+        fname_pof = os.path.join(DIR, fname_prefix + '.pof')
+        np.savetxt(fname_pof, A, fmt='%.6e', header=str(N)+' '+str(m))
     else:
         if m == 2:
             plt.scatter(A[:,0], A[:,1], color=(0.7, 0.7, 0.7), edgecolors=(0.4, 0.4, 0.4))
@@ -38,11 +46,14 @@ def saveApproximationSet(A, algorithm, problem, run, mode='save_all'):
         plt.title(algorithm+' on '+problem)
         plt.tight_layout()
         if mode == 'save_all':
-            np.savetxt('Results/Approximations/'+algorithm+'_'+problem+'_{0:0=2d}D'.format(m)+'_R{0:0=2d}'.format(run)+'.pof', A, fmt='%.6e', header=str(N)+' '+str(m))
-            plt.savefig('Results/Approximations/'+algorithm+'_'+problem+'_{0:0=2d}D'.format(m)+'_R{0:0=2d}'.format(run)+'.png')
+            fname_pof = os.path.join(DIR, fname_prefix + '.pof')
+            fname_png = os.path.join(DIR, fname_prefix + '.png')
+            np.savetxt(fname_pof, A, fmt='%.6e', header=str(N)+' '+str(m))
+            plt.savefig(fname_png)
             plt.close()
         elif mode == 'save_fig':
-            plt.savefig('Results/Approximations/'+algorithm+'_'+problem+'_{0:0=2d}D'.format(m)+'_R{0:0=2d}'.format(run)+'.png')
+            fname_png = os.path.join(DIR, fname_prefix + '.png')
+            plt.savefig(fname_png)
             plt.close()
         elif mode == 'plot':
             plt.show()

@@ -1,6 +1,8 @@
 import sys
+import os
 import numpy as np
 import argparse
+import hashlib
 
 from Public.FastIterativeGreedyRemovalAlgorithm import fastIterativeGreedyRemovalAlgorithm
 from Public.ObtainMinAndMax import obtainMinAndMax
@@ -8,6 +10,7 @@ from Public.SaveApproximationSet import saveApproximationSet
 from Indicators.SPD import SPD
 from Indicators.MMD import MMD
 
+DIR = "Results/Sequences/"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Tester of distance sequence for RSEIterative.")
@@ -18,6 +21,8 @@ if __name__ == '__main__':
     parser.add_argument("--iterations", required=True, type=int, default=100, help="Number of iterations for RSEIterative.")
     parser.add_argument("--QI", required=True, type=str, default="SPD", choices=["SPD", "MMD"], help="Quality indicator for fitness evaluation of the resulting subset.")
     parser.add_argument("--runs", required=True, type=int, default=1, help="Number of independent runs required to evaluate the best solution on the problem.")
+    parser.add_argument("--file", required=True, type=str, help="File that contains the resulting sequences.")
+    parser.add_argument("--seq", type=str, default="best", choices=["best", "worst", "median"], help="Sequence of distances to analyze.")
     args = parser.parse_args()
     
     if args.m < 2:
@@ -38,23 +43,33 @@ if __name__ == '__main__':
     # Define set of distances.
     distances_list = ['euclidean', 'seuclidean', 'cityblock', 'chebyshev', 'braycurtis', 'mahalanobis', 'correlation', 'canberra', 'cosine']
     # Load file with sequences of distances.
-    P = np.genfromtxt('Results/FinalPopulation.txt', dtype='int')
-    # Only use the best sequence
-    best = P[0]
+    seq_file = os.path.join(DIR, args.file)
+    P = np.genfromtxt(seq_file, dtype='int')
     
+    if args.seq == "best":
+        sequence = P[0]
+    elif args.seq == "worst":
+        sequence = P[len(P) - 1]
+    elif args.seq == "median":
+        sequence = P[int(np.floor(len(P) / 2)) + 1]
+    
+
     # Load reference points
     zmin, zmax = obtainMinAndMax(args.problem, args.m)
     zmin = np.tile(zmin, (args.subset_size, 1))
     zmax = np.tile(zmax, (args.subset_size, 1))
     evaluation = []
     for run in range(1, args.runs+1):
-        print('Best solution | Problem:', args.problem, '| Objectives:', args.m, '| Indicator:', args.QI, '| Run:', run)
+        print(f'{args.seq} solution | Problem:', args.problem, '| Objectives:', args.m, '| Indicator:', args.QI, '| Run:', run)
         # Execute RSEIterative
-        S = fastIterativeGreedyRemovalAlgorithm(A, distances_list, args.ppf, args.subset_size, args.iterations, best)
+        S = fastIterativeGreedyRemovalAlgorithm(A, distances_list, args.ppf, args.subset_size, args.iterations, sequence)
         Sprime = (S-zmin)/(zmax-zmin)
         if args.QI == 'SPD':
             evaluation.append(SPD(Sprime))
         elif args.QI == 'MMD':
             evaluation.append(MMD(Sprime))
-        saveApproximationSet(S, 'Best_solution', args.problem, run, 'save_all')
-    np.savetxt('Results/Performance/Best_solution_'+args.problem+'_{0:0=2d}D'.format(args.m)+'.'+args.QI.lower(), evaluation, fmt='%.18e', header=str(len(evaluation))+' 1')
+        saveApproximationSet(S, args.seq, args.problem, run, args.file, 'save_all')
+        
+    name, _ = os.path.splitext(args.file)
+    md5_hash = hashlib.md5(name.encode()).hexdigest()
+    np.savetxt(f'Results/Performance/{args.seq}_'+args.problem+'_{0:0=2d}D'.format(args.m)+'_'+md5_hash+'.'+args.QI.lower(), evaluation, fmt='%.18e', header=str(len(evaluation))+' 1')

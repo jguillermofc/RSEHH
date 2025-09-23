@@ -20,7 +20,7 @@ def save_results(P, run):
     np.savetxt(fname_pop, P.decision, fmt='%d', header=str(N)+' '+str(n))
     np.savetxt(fname_eval, P.evaluation, fmt='%.6e', header=str(N)+' '+str(NA))
 
-def build_filename(args, file_type="Population", run_id=None, ext="txt", add_timestamp=False, outdir="Results"):
+def build_filename(args, file_type="Population", run_id=None, ext="txt", add_timestamp=False, outdir="Results/Sequences/"):
     """
     Build a unique filename from argparse arguments.
     
