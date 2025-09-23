@@ -19,17 +19,17 @@ def fastIterativeGreedyRemovalAlgorithm(A, distances_list, ppf, subset_size, ite
         Aprime = (A-zmin)/denom
         selected = np.arange(0, subset_size)
         candidates = np.arange(subset_size, len(A))
-        
+        # Define the number of time windows
         window_cycles = iterations//len(individual)
-
+        # Main cycle
         for var in individual:
+            # For each distance (var represents an index in [0, 8]), and then decode it with distances_list.
             distance = distances_list[var]
             if 'minkowski' in distance:
                 distance, p_minkowski = distance.split()
                 p_minkowski = float(p_minkowski)
             else:
-                p_minkowski = None
-            
+                p_minkowski = None            
             Diss = pairPotentialEnergyKernel(Aprime[selected], ppf, distance_type=distance, p_minkowski=p_minkowski)
             memo = np.sum(Diss, axis=1)
             for i in range(window_cycles):
@@ -49,5 +49,6 @@ def fastIterativeGreedyRemovalAlgorithm(A, distances_list, ppf, subset_size, ite
                     diss[worst] = 0
                     Diss[:,worst] = diss
                     Diss[worst,:] = diss
+        # Define subset.
         S = A[selected]
     return S

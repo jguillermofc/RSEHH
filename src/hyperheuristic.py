@@ -9,6 +9,63 @@ from Public.MatingSelection import matingSelection
 from Public.GenerateOffspring import generateOffspring
 from Public.SurvivalSelection import survivalSelection
 
+import datetime
+import os
+
+def save_results(P, run):
+    N, n = np.shape(P.decision)
+    NA = len(P.evaluation[0])    
+    fname_pop = build_filename(args, run_id=run, file_type="Population", ext="dat", add_timestamp=False)
+    fname_eval = build_filename(args, run_id=run, file_type="Evaluation", ext="dat", add_timestamp=False)    
+    np.savetxt(fname_pop, P.decision, fmt='%d', header=str(N)+' '+str(n))
+    np.savetxt(fname_eval, P.evaluation, fmt='%.6e', header=str(N)+' '+str(NA))
+
+def build_filename(args, file_type="Population", run_id=None, ext="txt", add_timestamp=False, outdir="Results"):
+    """
+    Build a unique filename from argparse arguments.
+    
+    Parameters
+    ----------
+    args : Namespace
+        Parsed arguments from argparse.
+    run_id : int or None
+        Run index (if multiple runs). If None, it will not be included.
+    ext : str
+        File extension (default "txt").
+    add_timestamp : bool
+        Whether to append a timestamp for uniqueness.
+    outdir : str
+        Directory where the file will be saved.
+    
+    Returns
+    -------
+    str : Full file path.
+    """
+    fname = (
+        f"{file_type}"
+        f"_{args.ppf}"
+        f"_N{args.N}"
+        f"_n{args.n}"
+        f"_G{args.Gmax}"
+        f"_M{args.M}"
+        f"_m{args.m}"
+        f"_ss{args.subset_size}"
+        f"_it{args.iterations}"
+        f"_QI{args.QI}"
+        f"_fit{args.fitness}"
+    )
+
+    if run_id is not None:
+        fname += f"_r{run_id}"
+
+    if add_timestamp:
+        timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        fname += f"_{timestamp}"
+
+    fname += f".{ext}"
+
+    return os.path.join(outdir, fname)
+
 def GA(N, n, max_generations, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs, fitness_type):
     """Runs main framework of GA"""
     print('Initialization')
@@ -37,7 +94,8 @@ if __name__ == "__main__":
     parser.add_argument("--subset_size", required=True, type=int, default=100, help="Desired subset size.")
     parser.add_argument("--iterations", required=True, type=int, default=100, help="Number of iterations for RSEIterative.")
     parser.add_argument("--QI", required=True, type=str, default="SPD", choices=["SPD", "MMD"], help="Quality indicator for fitness evaluation of the resulting subset.")
-    parser.add_argument("--runs", required=True, type=int, default=1, help="Number of independent runs required to evaluate the best solution on the problem.")
+    parser.add_argument("--runs_ss", required=True, type=int, default=1, help="Number of independent runs for RSEIterative")
+    parser.add_argument("--runs_ga", type=int, default=1, help="Number of independent executions of the GA acting as hyper-heuristic.")
     parser.add_argument("--fitness", required=True, type=str, default="SDD", choices=["Mean", "Median", "Rank", "SDD"], help="Fitness type used to assess the performance of the sequences of metrics for RSEIterative.")
     args = parser.parse_args()
     
@@ -62,9 +120,13 @@ if __name__ == "__main__":
     if args.iterations < 0:
         args.error("The number of iterations for RSEIterative should be a positive integer!")
         sys.exit(-1)
-    if args.runs < 0:
+    if args.runs_ss < 0:
         args.error("runs should be a positive integer!")
         sys.exit(-1)
+    if args.runs_ga < 0:
+        args.error("runs_ga should be a positive integer!")
+        sys.exit(-1)
+    
 
         
     training_problems = ['ZCAT1', 'ZCAT2', 'ZCAT3', 'ZCAT4', 'ZCAT5',
@@ -78,23 +140,22 @@ if __name__ == "__main__":
     
     distances_list = ['euclidean', 'seuclidean', 'cityblock', 'chebyshev', 'braycurtis', 'mahalanobis', 'correlation', 'canberra', 'cosine']
     
+    
     print('Population size:', args.N, '| Windows:', args.n, '| Generations:', args.Gmax, 
             '| Set size:', args.M, '| Objectives:', args.m, '| PPF:', args.ppf, '| Subset size:', args.subset_size, '| Iterations:', args.iterations, 
-            '| Indicator:', args.QI, '| Runs per evaluation:', args.runs, '| Fitness:', args.fitness)
-    
-    P = GA(args.N, 
-           args.n, 
-           args.Gmax, 
-           training_problems, 
-           training_sets, 
-           distances_list, 
-           args.ppf, 
-           args.subset_size, 
-           args.iterations, 
-           args.QI, 
-           args.runs, 
-           args.fitness)
-    N, n = np.shape(P.decision)
-    NA = len(P.evaluation[0])
-    np.savetxt('Results/FinalPopulation.txt', P.decision, fmt='%d', header=str(N)+' '+str(n))
-    np.savetxt('Results/FinalEvaluation.txt', P.evaluation, fmt='%.6e', header=str(N)+' '+str(NA))
+            '| Indicator:', args.QI, '| Runs per evaluation:', args.runs_ss, '| Fitness:', args.fitness, '| Runs GA:', args.runs_ga)
+    for run_ga in range(1, args.runs_ga + 1):
+        print(f"*********** Genetic Algorithm - Run {run_ga} ***********")
+        P = GA(args.N, 
+            args.n, 
+            args.Gmax, 
+            training_problems, 
+            training_sets, 
+            distances_list, 
+            args.ppf, 
+            args.subset_size, 
+            args.iterations, 
+            args.QI, 
+            args.runs_ss, 
+            args.fitness)
+        save_results(P, run_ga)
