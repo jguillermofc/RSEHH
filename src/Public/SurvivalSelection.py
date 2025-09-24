@@ -16,7 +16,8 @@ def survivalSelection(R, N, fitness_type):
     elif fitness_type == 'Rank':
         fitness = rankFitness(R)
     elif fitness_type == 'SDD':
-        fitness = rankFitness(R)
+        fitness = SDDFitness(R)
+        print("SDD")
 
     if fitness_type in ['Mean','Median']:
         selected = np.argsort(-fitness)[:N]
@@ -42,12 +43,14 @@ def SDDFitness(R):
     """Calculates fitness of individuals based on standard deviation of differences (Pillay & Qu (2020))"""
     N, NA = np.shape(R.evaluation)
     best = np.max(R.evaluation,axis=0)    
+
     stdDevDiff = np.zeros(N)
     for i in range(N):
-    	x = np.zeros(NA)
-    	for j in range(NA):
-    		if best[j] != 0 and R.evaluation[i,j] != 0:
-    			x[j] = ( (np.abs(R.evaluation[i]-best)) / (np.mean(np.vstack((R.evaluation[i],best)),axis=0)) ) * 100
-    	x_mean = np.mean(x)
-    	stdDevDiff[i] = np.sqrt(((x - x_mean)**2)/(N-1))
+        x = np.zeros(NA)
+        for j in range(NA):
+            if best[j] != 0 and R.evaluation[i,j] != 0:
+                #print(( (np.abs(R.evaluation[i]-best)) / (np.mean(np.vstack((R.evaluation[i],best)),axis=0)) ) * 100)
+                x[j] = ( (np.abs(R.evaluation[i, j]-best[j])) / (np.mean(np.vstack((R.evaluation[i,j],best[j])),axis=0)) ) * 100
+        x_mean = np.mean(x)
+        stdDevDiff[i] = np.sqrt(((x - x_mean)**2)/(N-1))
     return stdDevDiff
