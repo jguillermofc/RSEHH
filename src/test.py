@@ -68,7 +68,7 @@ if __name__ == '__main__':
             evaluation.append(SPD(Sprime))
         elif args.QI == 'MMD':
             evaluation.append(MMD(Sprime))
-        saveApproximationSet(S, args.seq, args.problem, run, args.file, 'save_all')
+        saveApproximationSet(S, args.seq, args.problem, args.subset_size, run, args.file, 'save_all')
         
     name, _ = os.path.splitext(args.file)
     md5_hash = hashlib.md5(name.encode()).hexdigest()
