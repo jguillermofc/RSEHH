@@ -16,7 +16,7 @@ def survivalSelection(R, N, fitness_type):
     elif fitness_type == 'Rank':
         fitness = rankFitness(R)
     elif fitness_type == 'SDD':
-        fitness = rankFitness(R)
+        fitness = SDDFitness(R)
 
     if fitness_type in ['Mean','Median']:
         selected = np.argsort(-fitness)[:N]

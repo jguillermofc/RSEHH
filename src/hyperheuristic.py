@@ -51,8 +51,10 @@ def build_filename(args, file_type="Population", run_id=None, ext="txt", add_tim
         f"_m{args.m}"
         f"_ss{args.subset_size}"
         f"_it{args.iterations}"
+        f"_runsSS{args.runs_ss}"
         f"_QI{args.QI}"
         f"_fit{args.fitness}"
+        
     )
 
     if run_id is not None:

@@ -1,4 +1,5 @@
 import subprocess
+from itertools import product
 
 def run_experiment(params):
     cmd = ["python3", "test.py"]
@@ -13,44 +14,51 @@ def run_experiment(params):
     print("STDOUT:\n", result.stdout)
     print("STDERR:\n", result.stderr)
 
+
 CARD_GROUND_SET = [10000,]
 SEQ = ["best", "median", "worst"]
 PROBLEMS = {#2: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP1", "IMOP2", "IMOP3", "WFG1", "WFG2", "WFG3", "WFG4", "ZDT1", "ZDT2", "ZDT3", "ZDT6"], 
-            #3: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP4", "IMOP5", "IMOP6", "IMOP7", "IMOP8", "VNT1", "VNT2", "VNT3", "WFG1", "WFG2", "WFG3", "WFG4"],
+            3: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP4", "IMOP5", "IMOP6", "IMOP7", "IMOP8", "VNT1", "VNT2", "VNT3", "WFG1", "WFG2", "WFG3", "WFG4"],
             #4: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
-            5: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
+            #5: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
             #6: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
             #7: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
-            8: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
+            #8: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
             #9: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
-            10: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"]}
+            #10: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"]
+            }
+
+
 PPF = "RSE"
-SS_SIZE = {2: [10, 25, 50, 100, 150, 200],
-           3: [28,  55, 105, 153, 210],
-           5: [15, 70, 126, 210],
-           8: [36, 120],
-           10: [10, 55, 220]
-           }
+SS_SIZE = {
+    2: [10, 25, 50, 100, 150, 200],
+    3: [28,  55, 105, 153, 210],
+    5: [15, 70, 126, 210],
+    8: [36, 120],
+    10: [10, 55, 220]
+}
 ITERS = 10000
 QI = "SPD"
 RUNS = 1
-FILE = "Population_RSE_N10_n100_G10_M10000_m3_ss105_it10000_QISPD_fitSDD_r1.dat"
+FILE = "Population_RSE_N10_n100_G1_M10000_m3_ss105_it10000_runsSS5_QISPD_fitSDD_r1.dat"
 
 for nobj, problems in PROBLEMS.items():
-    for problem in problems:
-        for card in CARD_GROUND_SET:
-            instance = f"{problem}_{card}"
-            for type_seq in SEQ:
-                for ss_size in SS_SIZE[nobj]:
-                    exp = {
-                        "seq": type_seq,
-                        "problem": instance,
-                        "m": nobj,
-                        "ppf": PPF,
-                        "subset_size": ss_size,
-                        "iterations": ITERS,
-                        "QI": QI,
-                        "runs": RUNS,
-                        "file": FILE                        
-                    }
-                    run_experiment(exp)
+    for problem, card, type_seq, ss_size in product(
+        problems,
+        CARD_GROUND_SET,
+        SEQ,
+        SS_SIZE[nobj]
+    ):
+        instance = f"{problem}_{card}"
+        exp = {
+            "seq": type_seq,
+            "problem": instance,
+            "m": nobj,
+            "ppf": PPF,
+            "subset_size": ss_size,
+            "iterations": ITERS,
+            "QI": QI,
+            "runs": RUNS,
+            "file": FILE
+        }
+        run_experiment(exp)
