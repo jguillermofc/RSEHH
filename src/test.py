@@ -72,4 +72,4 @@ if __name__ == '__main__':
         
     name, _ = os.path.splitext(args.file)
     md5_hash = hashlib.md5(name.encode()).hexdigest()
-    np.savetxt(f'Results/Performance/{args.seq}_'+args.problem+'_{0:0=2d}D'.format(args.m)+'_'+md5_hash+'.'+args.QI.lower(), evaluation, fmt='%.18e', header=str(len(evaluation))+' 1')
+    np.savetxt(f'Results/Performance/{args.seq}_'+args.problem+'_ss{0:0=d}_{1:0=2d}D'.format(args.subset_size, args.m)+'_'+md5_hash+'.'+args.QI.lower(), evaluation, fmt='%.18e', header=str(len(evaluation))+' 1')

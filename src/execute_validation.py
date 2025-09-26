@@ -39,10 +39,12 @@ SS_SIZE = {
 }
 ITERS = 10000
 QI = "SPD"
-RUNS = 1
-FILE = "Population_RSE_N10_n100_G1_M10000_m3_ss105_it10000_runsSS5_QISPD_fitSDD_r1.dat"
+RUNS = 21
+FILE = {#2: "Population_RSE_N10_n100_G1_M10000_m3_ss105_it10000_runsSS5_QISPD_fitSDD_r1.dat",
+        3: "Population_RSE_N10_n100_G100_M10000_m3_ss105_it10000_runsSS11_QISPD_fitSDD_r1.dat"}
 
 for nobj, problems in PROBLEMS.items():
+    file = FILE[nobj]
     for problem, card, type_seq, ss_size in product(
         problems,
         CARD_GROUND_SET,
@@ -59,6 +61,6 @@ for nobj, problems in PROBLEMS.items():
             "iterations": ITERS,
             "QI": QI,
             "runs": RUNS,
-            "file": FILE
+            "file": file
         }
         run_experiment(exp)
