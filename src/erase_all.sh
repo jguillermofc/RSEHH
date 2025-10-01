@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm Results/Approximations/*
+rm -r  Results/Approximations/*
 rm Results/Performance/*

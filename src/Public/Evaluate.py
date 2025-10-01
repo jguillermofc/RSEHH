@@ -23,7 +23,6 @@ def evaluate(decision, training_problems, training_sets, distances_list, ppf, su
     runs = [runs for i in range(NA)]
     cpus = mp.cpu_count() if mp.cpu_count() < NA else NA
     for i in range(N):
-        print('\tEvaluating individual', i+1)
         individual = [decision[i] for j in range(NA)]
         with mp.Pool(cpus) as pool:
             results = pool.starmap(parallelFunction, zip(training_problems, training_sets, distances_list, ppf, subset_size, iterations, individual, indicator, runs))

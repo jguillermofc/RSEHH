@@ -7,7 +7,7 @@ import scipy.stats as stats
 
 from Public.Population import population
 
-def survivalSelection(R, N, fitness_type):
+def survivalSelection(R, N, fitness_type, subset_size=None):
     """Returns population with best individuals"""
     if fitness_type == 'Mean':
         fitness = meanFitness(R)
@@ -16,14 +16,13 @@ def survivalSelection(R, N, fitness_type):
     elif fitness_type == 'Rank':
         fitness = rankFitness(R)
     elif fitness_type == 'SDD':
-        fitness = SDDFitness(R)
-
+        fitness = SDDFitness(R, best_known_value=subset_size)
+    # Subset selection
     if fitness_type in ['Mean','Median']:
         selected = np.argsort(-fitness)[:N]
     elif fitness_type in ['Rank','SDD']:
         selected = np.argsort(fitness)[:N]
-        
-    return population(R.decision[selected], R.evaluation[selected])
+    return population(R.decision[selected], R.evaluation[selected]), np.min(fitness)
 
 def meanFitness(R):
     """Calculates fitness of individuals based on mean"""
@@ -38,11 +37,16 @@ def rankFitness(R):
     rankings = stats.rankdata(-R.evaluation, method='average', axis=0)
     return np.mean(rankings, axis=1)
     
-def SDDFitness(R): 
+def SDDFitness(R, best_known_value = None): 
     """Calculates fitness of individuals based on standard deviation of differences (Pillay & Qu (2020))"""
     N, NA = np.shape(R.evaluation)
-    best = np.max(R.evaluation,axis=0)    
-    stdDevDiff = np.zeros(N)
+    # N: number of individuals.
+    # NA: number of point set instances (size of the training set).
+    if best_known_value is None:
+        best = np.max(R.evaluation,axis=0)  # this option does not generate a monotone fitness function through generations.  
+    else:
+        best = np.ones(NA)*best_known_value # this option generates a monotone fitness function through generations.  
+    stdDevDiff = np.zeros(NA)
     for i in range(N):
     	x = np.zeros(NA)
     	for j in range(NA):
