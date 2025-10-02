@@ -17,7 +17,7 @@ def run_experiment(params):
 
 CARD_GROUND_SET = [10000,]
 SEQ = ["best", "median", "worst"]
-PROBLEMS = {2: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP1", "IMOP2", "IMOP3", "WFG1", "WFG2", "WFG3", "WFG4", "ZDT1", "ZDT2", "ZDT3", "ZDT6"], 
+PROBLEMS = {#2: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP1", "IMOP2", "IMOP3", "WFG1", "WFG2", "WFG3", "WFG4", "ZDT1", "ZDT2", "ZDT3", "ZDT6"], 
             3: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP4", "IMOP5", "IMOP6", "IMOP7", "IMOP8", "VNT1", "VNT2", "VNT3", "WFG1", "WFG2", "WFG3", "WFG4"],
             #4: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
             #5: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
@@ -40,7 +40,7 @@ SS_SIZE = {
 ITERS = 10000
 QI = "SPD"
 RUNS = 21
-FILE = {2: "Population_RSE_N10_n100_G101_M10000_m2_ss105_it10000_runsSS11_QISPD_fitSDD_r1.dat",
+FILE = {#2: "Population_RSE_N10_n100_G101_M10000_m2_ss105_it10000_runsSS11_QISPD_fitSDD_r1.dat",
         3: "Population_RSE_N10_n100_G101_M10000_m3_ss105_it10000_runsSS11_QISPD_fitSDD_r1.dat"}
 
 for nobj, problems in PROBLEMS.items():

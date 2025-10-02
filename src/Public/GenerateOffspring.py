@@ -19,6 +19,7 @@ def crossover(MA, MB, N, pc):
     """Generates an offspring population"""
     O, n = np.shape(MA)
     mu = np.random.rand(O, n)
+    # mu[np.tile(np.random.rand(O, 1) <= pc, (1, n))] = 1?????
     mu[np.tile(np.random.rand(O, 1) > pc, (1, n))] = 1
     QA = np.copy(MA)
     QB = np.copy(MA)

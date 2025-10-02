@@ -74,7 +74,7 @@ def GA(N, n, max_generations, training_problems, training_sets, distances_list, 
     """Runs main framework of GA"""
     print('Initialization')
     lb, ub = np.zeros(n), np.full(n, len(distances_list)-1.0)
-    pc, pm = 0.9, 1/n
+    pc, pm = 1.0, 0.1
     P = randomPopulation(N, n, lb, ub, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)
     generations = 0
     conv = np.zeros(max_generations)
