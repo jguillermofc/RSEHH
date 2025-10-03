@@ -42,10 +42,10 @@ def SDDFitness(R, best_known_value = None):
     """Calculates fitness of individuals based on standard deviation of differences (Pillay & Qu (2020))"""
     # N: number of individuals. 
     # NA: number of point set instances (size of the training set).
-    if best_known_value is None:
-        best = np.max(R.evaluation,axis=0)
-    else:
-        best = np.ones(NA)*best_known_value 
+    #if best_known_value is None:
+    # best = np.max(R.evaluation,axis=0)
+    #else:
+    best = np.ones(NA)*best_known_value 
     stdDevDiff = np.zeros(NA)
     for i in range(N):
         x = np.zeros(NA)

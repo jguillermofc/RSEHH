@@ -41,7 +41,7 @@ ITERS = 10000
 QI = "SPD"
 RUNS = 21
 FILE = {#2: "Population_RSE_N10_n100_G101_M10000_m2_ss105_it10000_runsSS11_QISPD_fitSDD_r1.dat",
-        3: "Population_RSE_N10_n100_G101_M10000_m3_ss105_it10000_runsSS11_QISPD_fitSDD_r1.dat"}
+        3: "Population_RSE_N10_n100_G101_M10000_m3_ss105_it10000_runsSS1_QISPD_fitSDD_r1.dat"}
 
 for nobj, problems in PROBLEMS.items():
     file = FILE[nobj]

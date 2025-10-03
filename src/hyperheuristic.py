@@ -8,6 +8,7 @@ from Public.RandomPopulation import randomPopulation
 from Public.MatingSelection import matingSelection
 from Public.GenerateOffspring import generateOffspring
 from Public.SurvivalSelection import survivalSelection
+from Public.Evaluate import evaluate
 
 import datetime
 import os
@@ -83,8 +84,12 @@ def GA(N, n, max_generations, training_problems, training_sets, distances_list, 
         M = matingSelection(P, N)
         Q = generateOffspring(M, N, lb, ub, pc, pm, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)
         R = population(np.vstack((P.decision, Q.decision)), np.vstack((P.evaluation, Q.evaluation)))
+        
+        R.evaluation = evaluate(R.decision, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)        
+        
         P, min_fitness = survivalSelection(R, N, fitness_type, subset_size=subset_size)
         conv[generations] = min_fitness
+        print('Best fitness:', min_fitness)
         generations += 1
     return P, conv
 
