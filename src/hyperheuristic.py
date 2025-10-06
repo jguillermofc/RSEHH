@@ -13,15 +13,14 @@ from Public.Evaluate import evaluate
 import datetime
 import os
 
-def save_results(P, conv, run):
+def save_results(P, run):
     N, n = np.shape(P.decision)
     NA = len(P.evaluation[0])    
     fname_pop = build_filename(args, run_id=run, file_type="Population", ext="dat", add_timestamp=False)
-    fname_eval = build_filename(args, run_id=run, file_type="Evaluation", ext="dat", add_timestamp=False)   
-    fname_conv = build_filename(args, run_id=run, file_type="Conv", ext="dat", add_timestamp=False)   
+    fname_eval = build_filename(args, run_id=run, file_type="Evaluation", ext="dat", add_timestamp=False)     
     np.savetxt(fname_pop, P.decision, fmt='%d', header=str(N)+' '+str(n))
     np.savetxt(fname_eval, P.evaluation, fmt='%.6e', header=str(N)+' '+str(NA))
-    np.savetxt(fname_conv, conv, fmt='%.6e', header=str(len(conv)))
+  
 
 def build_filename(args, file_type="Population", run_id=None, ext="txt", add_timestamp=False, outdir="Results/Sequences/"):
     """
@@ -74,24 +73,19 @@ def build_filename(args, file_type="Population", run_id=None, ext="txt", add_tim
 def GA(N, n, max_generations, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs, fitness_type):
     """Runs main framework of GA"""
     print('Initialization')
+    
     lb, ub = np.zeros(n), np.full(n, len(distances_list)-1.0)
     pc, pm = 1.0, 0.1
     P = randomPopulation(N, n, lb, ub, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)
     generations = 0
-    conv = np.zeros(max_generations)
     while generations < max_generations:
         print('Generation', generations+1)
         M = matingSelection(P, N)
         Q = generateOffspring(M, N, lb, ub, pc, pm, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)
         R = population(np.vstack((P.decision, Q.decision)), np.vstack((P.evaluation, Q.evaluation)))
-        
-        #R.evaluation = evaluate(R.decision, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)        
-        
-        P, min_fitness = survivalSelection(R, N, fitness_type, subset_size=subset_size)
-        conv[generations] = min_fitness
-        print('Best fitness:', min_fitness)
+        P = survivalSelection(R, N, fitness_type)
         generations += 1
-    return P, conv
+    return P
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Hyper-heuristic to select distance metric for Riesz s-kernel during subset selection (RSEIterative).")
@@ -156,7 +150,8 @@ if __name__ == "__main__":
             '| Indicator:', args.QI, '| Runs per evaluation:', args.runs_ss, '| Fitness:', args.fitness, '| Runs GA:', args.runs_ga)
     for run_ga in range(1, args.runs_ga + 1):
         print(f"*********** Genetic Algorithm - Run {run_ga} ***********")
-        P, conv = GA(args.N, 
+        np.random.seed(run_ga)  # For reproducibility
+        P = GA(args.N, 
             args.n, 
             args.Gmax, 
             training_problems, 
@@ -168,4 +163,4 @@ if __name__ == "__main__":
             args.QI, 
             args.runs_ss, 
             args.fitness)
-        save_results(P, conv, run_ga)
+        save_results(P, run_ga)
