@@ -18,11 +18,14 @@ def survivalSelection(R, N, fitness_type, subset_size=None):
     elif fitness_type == 'SDD':
         fitness = SDDFitness(R, best_known_value=subset_size)
     # Subset selection
+    print("Fitness:", fitness)
     if fitness_type in ['Mean','Median']:
         selected = np.argsort(-fitness)[:N]
+        #best_fitness = np.max(fitness[selected])
     elif fitness_type in ['Rank','SDD']:
         selected = np.argsort(fitness)[:N]
-    return population(R.decision[selected], R.evaluation[selected]), np.min(fitness)
+        #best_fitness = np.min(fitness[selected])
+    return population(R.decision[selected], R.evaluation[selected]), min(fitness)
 
 def meanFitness(R):
     """Calculates fitness of individuals based on mean"""
@@ -43,10 +46,10 @@ def SDDFitness(R, best_known_value = None):
     # N: number of individuals. 
     # NA: number of point set instances (size of the training set).
     #if best_known_value is None:
-    # best = np.max(R.evaluation,axis=0)
+    #best = np.max(R.evaluation,axis=0)
     #else:
     best = np.ones(NA)*best_known_value 
-    stdDevDiff = np.zeros(NA)
+    stdDevDiff = np.zeros(N)
     for i in range(N):
         x = np.zeros(NA)
         for j in range(NA):
@@ -54,5 +57,6 @@ def SDDFitness(R, best_known_value = None):
                 x[j] = ( (np.abs(R.evaluation[i,j]-best[j])) / ((R.evaluation[i,j]+best[j])/2) ) * 100  
         x_mean = np.mean(x)
         stdDevDiff[i] = np.sqrt(np.sum((x - x_mean)**2)/(N-1))
+    print("SDD values:", len(stdDevDiff))
     return stdDevDiff
 

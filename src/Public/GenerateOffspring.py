@@ -12,10 +12,9 @@ def generateOffspring(M, N, lb, ub, pc, pm, training_problems, training_sets, di
     MA, MB = M[:len(M)//2], M[len(M)//2:]
     decision = crossover(MA, MB, N, pc)
     decision = mutation(decision, lb, ub, pm)
-    #evaluation = evaluate(decision, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)
-    
-    #return population(decision, evaluation)
-    return population(decision, np.zeros((N, len(training_problems))))
+    evaluation = evaluate(decision, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)    
+    return population(decision, evaluation)
+
 def crossover(MA, MB, N, pc):
     """Generates an offspring population"""
     O, n = np.shape(MA)
