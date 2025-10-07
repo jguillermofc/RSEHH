@@ -9,12 +9,12 @@ import os
 
 
 
-def saveApproximationSet(A, algorithm, problem, ss_size, run, seq_file, mode='save_all'):
+def saveApproximationSet(A, ppf, algorithm, nobj, problem, ss_size, run, seq_file, mode='save_all'):
     """Draws and saves a given approximation set"""
     N,m = np.shape(A)   
     name, _ = os.path.splitext(seq_file)
     md5_hash = hashlib.md5(name.encode()).hexdigest()
-    DIR =  "Results/Approximations/RSE/"+problem
+    DIR =  f"Results/Approximations/{ppf}/{nobj:02d}D/{problem}"
 
     fname_prefix = algorithm+'_'+problem+'_ss{0:0=d}_{1:0=2d}D'.format(ss_size, m)+'_'+md5_hash+'_R{0:0=2d}'.format(run)
     os.makedirs(DIR, exist_ok=True)      

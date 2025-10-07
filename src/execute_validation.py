@@ -66,7 +66,7 @@ def _run_validation(type_seq, problem, m, ppf, subset_size, iterations, QI, runs
             evaluation.append(SPD(Sprime))
         elif QI == 'MMD':
             evaluation.append(MMD(Sprime))
-        saveApproximationSet(S, type_seq, problem, subset_size, run, seq_file, 'save_all')
+        saveApproximationSet(S, ppf, type_seq, m, problem, subset_size, run, seq_file, 'save_all')
         
     name, _ = os.path.splitext(seq_file)
     md5_hash = hashlib.md5(name.encode()).hexdigest()
