@@ -46,7 +46,6 @@ def SDDFitness(evaluation, best_value=None):
         best = best_value * np.ones(NA)
     else:
         best = np.max(evaluation,axis=0)
-    best = np.ones(NA)*105
     SDD = np.zeros(N)
     for i in range(N):
         x = np.zeros(NA)
