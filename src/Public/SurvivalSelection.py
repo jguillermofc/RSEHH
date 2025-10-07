@@ -37,12 +37,16 @@ def rankFitness(evaluation):
     rankings = stats.rankdata(-evaluation, method='average', axis=0)
     return np.mean(rankings, axis=1)
 
-def SDDFitness(evaluation):
+def SDDFitness(evaluation, best_value=None):
     N, NA = np.shape(evaluation)
     """Calculates fitness of individuals based on standard deviation of differences (Pillay & Qu (2020))"""
     # N: number of individuals. 
     # NA: number of point set instances (size of the training set).
-    best = np.max(evaluation,axis=0)
+    if best_value is not None:
+        best = best_value * np.ones(NA)
+    else:
+        best = np.max(evaluation,axis=0)
+    best = np.ones(NA)*105
     SDD = np.zeros(N)
     for i in range(N):
         x = np.zeros(NA)

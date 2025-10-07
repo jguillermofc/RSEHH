@@ -21,7 +21,10 @@ def join(params):
     evaluation = np.vstack([np.loadtxt(f, skiprows=1, delimiter=' ') for f in eval_files])
     sequences = np.vstack([np.loadtxt(f, skiprows=1, delimiter=' ') for f in pop_files])
     # Compute the fitness values
-    fitness = fitness_dict[params.fitness](evaluation)
+    if params.fitness == "SDD":        
+        fitness = fitness_dict[params.fitness](evaluation, best_value = params.subset_size)
+    else:
+        fitness = fitness_dict[params.fitness](evaluation)
     # Sort the sequences and evaluation  based on fitness
     sorted_indices = np.argsort(fitness)
     fitness = fitness[sorted_indices]
