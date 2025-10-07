@@ -1,17 +1,28 @@
 import sys
 import numpy as np
 import argparse
-
+import datetime
+import os
 
 from Public.Population import population
 from Public.RandomPopulation import randomPopulation
 from Public.MatingSelection import matingSelection
 from Public.GenerateOffspring import generateOffspring
 from Public.SurvivalSelection import survivalSelection
-from Public.Evaluate import evaluate
+from Experiments.params import Parameters
 
-import datetime
-import os
+training_problems = ['ZCAT1', 'ZCAT2', 'ZCAT3', 'ZCAT4', 'ZCAT5',
+                    'ZCAT6', 'ZCAT7', 'ZCAT8', 'ZCAT9', 'ZCAT10',
+                    'ZCAT11', 'ZCAT12', 'ZCAT13', 'ZCAT14', 'ZCAT15',
+                    'ZCAT16', 'ZCAT17', 'ZCAT18', 'ZCAT19', 'ZCAT20']
+
+distances_list = ['euclidean', 'seuclidean', 
+                  'cityblock', 'chebyshev', 
+                  'braycurtis', 'mahalanobis', 
+                  'correlation', 'canberra', 
+                  'cosine']
+
+
 
 def save_results(P, run):
     N, n = np.shape(P.decision)
@@ -87,6 +98,29 @@ def GA(N, n, max_generations, training_problems, training_sets, distances_list, 
         generations += 1
     return P
 
+def execute_hyperheuristic(params):    
+    file_list = [problem+'_'+str(params.M)+'_{0:0=2d}D.pof'.format(params.m) for problem in training_problems]    
+    training_sets = [np.genfromtxt('ParetoFronts/'+str(params.M)+'/{0:0=2d}D/'.format(params.m)+file) for file in file_list]       
+    print('Population size:', params.N, '| Windows:', params.n, '| Generations:', params.Gmax, 
+            '| Set size:', params.M, '| Objectives:', params.m, '| PPF:', params.ppf, '| Subset size:', params.subset_size, '| Iterations:', params.iterations, 
+            '| Indicator:', params.QI, '| Runs per evaluation:', params.runs_ss, '| Fitness:', params.fitness, '| Runs GA:', params.runs_ga)
+    for run_ga in range(1, params.runs_ga + 1):
+        print(f"*********** Genetic Algorithm - Run {run_ga} ***********")
+        np.random.seed(run_ga)  # For reproducibility
+        P = GA(params.N, 
+            params.n, 
+            params.Gmax, 
+            training_problems, 
+            training_sets, 
+            distances_list, 
+            params.ppf, 
+            params.subset_size, 
+            params.iterations, 
+            params.QI, 
+            params.runs_ss, 
+            params.fitness)
+        save_results(P, run_ga)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Hyper-heuristic to select distance metric for Riesz s-kernel during subset selection (RSEIterative).")
     parser.add_argument('--N', required=True, type=int, default=10, help="Population size.")
@@ -130,37 +164,7 @@ if __name__ == "__main__":
     if args.runs_ga < 0:
         args.error("runs_ga should be a positive integer!")
         sys.exit(-1)
+    # Execute hyper-heuristic based on the provided arguments
+    params = Parameters(args.ppf, args.N, args.n, args.Gmax, args.M, args.m, args.subset_size, args.iterations, args.QI, args.runs_ss, args.fitness, args.runs_ga)  
+    execute_hyperheuristic(params)   
     
-
-        
-    training_problems = ['ZCAT1', 'ZCAT2', 'ZCAT3', 'ZCAT4', 'ZCAT5',
-                            'ZCAT6', 'ZCAT7', 'ZCAT8', 'ZCAT9', 'ZCAT10',
-                            'ZCAT11', 'ZCAT12', 'ZCAT13', 'ZCAT14', 'ZCAT15',
-                            'ZCAT16', 'ZCAT17', 'ZCAT18', 'ZCAT19', 'ZCAT20']
-    
-    file_list = [problem+'_'+str(args.M)+'_{0:0=2d}D.pof'.format(args.m) for problem in training_problems]
-    
-    training_sets = [np.genfromtxt('ParetoFronts/'+str(args.M)+'/{0:0=2d}D/'.format(args.m)+file) for file in file_list]
-    
-    distances_list = ['euclidean', 'seuclidean', 'cityblock', 'chebyshev', 'braycurtis', 'mahalanobis', 'correlation', 'canberra', 'cosine']
-    
-    
-    print('Population size:', args.N, '| Windows:', args.n, '| Generations:', args.Gmax, 
-            '| Set size:', args.M, '| Objectives:', args.m, '| PPF:', args.ppf, '| Subset size:', args.subset_size, '| Iterations:', args.iterations, 
-            '| Indicator:', args.QI, '| Runs per evaluation:', args.runs_ss, '| Fitness:', args.fitness, '| Runs GA:', args.runs_ga)
-    for run_ga in range(1, args.runs_ga + 1):
-        print(f"*********** Genetic Algorithm - Run {run_ga} ***********")
-        np.random.seed(run_ga)  # For reproducibility
-        P = GA(args.N, 
-            args.n, 
-            args.Gmax, 
-            training_problems, 
-            training_sets, 
-            distances_list, 
-            args.ppf, 
-            args.subset_size, 
-            args.iterations, 
-            args.QI, 
-            args.runs_ss, 
-            args.fitness)
-        save_results(P, run_ga)

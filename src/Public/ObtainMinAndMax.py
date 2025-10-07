@@ -121,4 +121,6 @@ def obtainMinAndMax(problem, m):
     elif 'ZCAT' in prefix:
         zmin = np.zeros(m)
         zmax = np.arange(1, m+1)**2
+    elif 'ZDT' in prefix:
+        zmin = np.ones(m)
     return zmin, zmax
