@@ -1,12 +1,9 @@
-import numpy as np
-import os
 from Experiments.params import Parameters
-
 from hyperheuristic import execute_hyperheuristic
 from join_sequences import join
 from execute_validation import validate
 
-param_set = [#Parameters("RSE", 10, 100, 100, 10000, 2, 105, 10000, "SPD", 11, "SDD", 5),
+param_set = [Parameters("RSE", 10, 100, 100, 10000, 2, 105, 10000, "SPD", 11, "SDD", 5),
             Parameters("RSE", 10, 100, 100, 10000, 3, 105, 10000, "SPD", 11, "SDD", 5),
             Parameters("RSE", 10, 100, 100, 10000, 4, 105, 10000, "SPD", 11, "SDD", 5),
             Parameters("RSE", 10, 100, 100, 10000, 5, 105, 10000, "SPD", 11, "SDD", 5),

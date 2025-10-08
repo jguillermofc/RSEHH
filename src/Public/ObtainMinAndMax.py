@@ -11,7 +11,9 @@ def obtainMinAndMax(problem, m):
         zmax = np.ones(m)
     elif prefix in ['DTLZ5']:
         zmin = np.zeros(m)
-        if m == 3:
+        if m == 2:
+            zmax = np.array([1, 1])
+        elif m == 3:
             zmax = np.array([7.071068e-01, 7.071068e-01, 1])
         elif m == 5:
             zmax = np.array([3.120704e+00, 2.556749e+00, 3.326446e+00, 3.412240e+00, 3.490394e+00])
@@ -32,7 +34,9 @@ def obtainMinAndMax(problem, m):
     elif prefix in ['DTLZ7']:
         zmin = np.zeros(m-1)
         zmax = np.append(np.ones(m-1)*(0.859401), 2*m)
-        if m == 3:
+        if m == 2:
+            zmin = np.append(zmin, 2)
+        elif m == 3:
             zmin = np.append(zmin, 2.614009)
         elif m == 5:
             zmin = np.append(zmin, 3.228017)
@@ -89,7 +93,9 @@ def obtainMinAndMax(problem, m):
         zmax = np.arange(2.0, 2*m+1, 2)
     elif prefix in ['WFG3']:
         zmin = np.zeros(m)
-        if m == 3:
+        if m == 2:
+            zmax = np.array([2.998313e+00, 3.281663e+00])
+        elif m == 3:
             zmax = np.array([2.988887e+00, 3.281663e+00, 6.081809e+00])
         elif m == 5:
             zmax = np.array([2.998313e+00, 4.996260e+00, 6.996529e+00, 8.237908e+00, 1.013179e+01])
@@ -122,5 +128,6 @@ def obtainMinAndMax(problem, m):
         zmin = np.zeros(m)
         zmax = np.arange(1, m+1)**2
     elif 'ZDT' in prefix:
-        zmin = np.ones(m)
+        zmin = np.zeros(m)
+        zmax = np.ones(m)        
     return zmin, zmax
