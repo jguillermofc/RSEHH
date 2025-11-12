@@ -30,7 +30,7 @@ distances_list = ['euclidean', 'jensenshannon',
 
 
 
-def save_results(P, run):
+def save_results(args, P, run):
     N, n = np.shape(P.decision)
     NA = len(P.evaluation[0])    
     fname_pop = build_filename(args, run_id=run, file_type="Population", ext="dat", add_timestamp=False)
@@ -125,7 +125,7 @@ def execute_hyperheuristic(params):
             params.QI, 
             params.runs_ss, 
             params.fitness)
-        save_results(P, run_ga)
+        save_results(params, P, run_ga)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Hyper-heuristic to select distance metric for Riesz s-kernel during subset selection (RSEIterative).")
