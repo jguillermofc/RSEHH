@@ -10,13 +10,13 @@ from Public.Population import population
 def survivalSelection(R, N, fitness_type):
     """Returns population with best individuals"""
     if fitness_type == 'Mean':
-        fitness = meanFitness(R)
+        fitness = meanFitness(R.evaluation)
     elif fitness_type == 'Median':
-        fitness = medianFitness(R)
+        fitness = medianFitness(R.evaluation)
     elif fitness_type == 'Rank':
-        fitness = rankFitness(R)
+        fitness = rankFitness(R.evaluation)
     elif fitness_type == 'SDD':
-        fitness = SDDFitness(R)
+        fitness = SDDFitness(R.evaluation)
     # Subset selection
     if fitness_type in ['Mean','Median']:
         selected = np.argsort(-fitness)[:N]

@@ -16,11 +16,17 @@ training_problems = ['ZCAT1', 'ZCAT2', 'ZCAT3', 'ZCAT4', 'ZCAT5',
                     'ZCAT11', 'ZCAT12', 'ZCAT13', 'ZCAT14', 'ZCAT15',
                     'ZCAT16', 'ZCAT17', 'ZCAT18', 'ZCAT19', 'ZCAT20']
 
-distances_list = ['euclidean', 'seuclidean', 
+# distances_list = ['euclidean', 'seuclidean', 
+#                  'cityblock', 'chebyshev', 
+#                  'braycurtis', 'mahalanobis', 
+#                  'correlation', 'canberra', 
+#                  'cosine']
+
+distances_list = ['euclidean', 'jensenshannon',
                   'cityblock', 'chebyshev', 
-                  'braycurtis', 'mahalanobis', 
-                  'correlation', 'canberra', 
+                  'braycurtis',
                   'cosine']
+
 
 
 

@@ -42,7 +42,8 @@ def _run_validation(type_seq, problem, m, ppf, subset_size, iterations, QI, runs
     # Load file to be processed.
     A = np.genfromtxt('ParetoFronts/'+'Test/'+'{0:0=2d}D/'.format(m)+problem+'_{0:0=2d}D'.format(m)+'.pof')
     # Define set of distances.
-    distances_list = ['euclidean', 'seuclidean', 'cityblock', 'chebyshev', 'braycurtis', 'mahalanobis', 'correlation', 'canberra', 'cosine']
+    distances_list = ['euclidean', 'jensenshannon', 'cityblock', 'chebyshev', 'braycurtis', 'cosine']
+    #distances_list = ['euclidean', 'seuclidean', 'cityblock', 'chebyshev', 'braycurtis', 'mahalanobis', 'correlation', 'canberra', 'cosine']
     # Load file with sequences of distances.
     P = np.genfromtxt(seq_file, dtype='int')
     
