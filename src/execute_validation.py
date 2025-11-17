@@ -20,7 +20,7 @@ RUNS = 21
 CARD_GROUND_SET = [10000,]
 SEQ = ["best", "median", "worst"]
 PROBLEMS = {2: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP1", "IMOP2", "IMOP3", "WFG1", "WFG2", "WFG3", "WFG4", "ZDT1", "ZDT2", "ZDT3", "ZDT6"], 
-            3: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP4", "IMOP5", "IMOP6", "IMOP7", "IMOP8", "VNT1", "VNT2", "VNT3", "WFG1", "WFG2", "WFG3", "WFG4"],
+            3: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP4", "IMOP5", "IMOP6", "IMOP7", "IMOP8", "VNT1",  "WFG1", "WFG2", "WFG3", "WFG4"], # quito vnt2 y vnt3 porque tienen menos puntos que el subset size minimo
             4: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
             5: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
             6: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "WFG1", "WFG2", "WFG3", "WFG4"],
@@ -31,12 +31,12 @@ PROBLEMS = {2: ["DTLZ1", "DTLZ2", "DTLZ5", "DTLZ7", "IMOP1", "IMOP2", "IMOP3", "
             }
 
 SS_SIZE = {
-    2: [10, 25, 50, 100, 150, 200],
-    3: [10, 28, 55, 105, 153, 210],
-    4: [10, 35, 56, 120, 165, 220],
-    5: [15, 35, 70, 126, 210],
-    8: [8, 36, 120],
-    10: [10, 55, 220]
+    2: [10, 25, 50, 100, 150, 200, 500],
+    3: [10, 25, 50, 100, 150, 200, 500],
+    4: [10, 25, 50, 100, 150, 200, 500],
+    5: [10, 25, 50, 100, 150, 200, 500],
+    8: [10, 25, 50, 100, 150, 200, 500],
+    10: [10, 25, 50, 100, 150, 200, 500]
 }
 
 def _run_validation(type_seq, problem, m, ppf, subset_size, iterations, QI, runs, seq_file):
@@ -68,7 +68,7 @@ def _run_validation(type_seq, problem, m, ppf, subset_size, iterations, QI, runs
             evaluation.append(SPD(Sprime))
         elif QI == 'MMD':
             evaluation.append(MMD(Sprime))
-        saveApproximationSet(S, ppf, type_seq, m, problem, subset_size, run, seq_file, 'save_all')
+        saveApproximationSet(S, ppf, type_seq, m, problem, subset_size, run, seq_file, 'save_txt')
         
     name, _ = os.path.splitext(seq_file)
     md5_hash = hashlib.md5(name.encode()).hexdigest()
