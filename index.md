@@ -1,5 +1,5 @@
 # Index of comparative tables from comparisons.
-## Investigating Sensitivity of IGD and IGD+ to the Reference Point Set Specification via Hyper-Heuristic Subset Selection
+## Reference Point Set Specification for IGD and IGD+ Using Learned Distance Schemes in Riesz S-Energy-Based Iterative Replacement Subset Selection
 ### Jesús Guillermo Falcón-Cardona, Julio Juárez, Luis Angel Marquez Vega, Hugo Terashima, Carlos A. Coello Coello
 
 
