@@ -9,6 +9,7 @@ from Public.FastIterativeGreedyRemovalAlgorithm import fastIterativeGreedyRemova
 from Public.ObtainMinAndMax import obtainMinAndMax
 from Indicators.SPD import SPD
 from Indicators.MMD import MMD
+from Indicators.PD import PD
 
 def evaluate(decision, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs):
     """Evaluates a population"""
@@ -44,4 +45,6 @@ def parallelFunction(problem, A, distances_list, ppf, subset_size, iterations, i
             evaluation.append(SPD(Sprime))
         elif indicator == 'MMD':
             evaluation.append(MMD(Sprime))
+        elif indicator == 'PD':
+            evaluation.append(PD(Sprime))
     return np.mean(evaluation)

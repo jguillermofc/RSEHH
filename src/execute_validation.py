@@ -10,12 +10,12 @@ from Public.ObtainMinAndMax import obtainMinAndMax
 from Public.SaveApproximationSet import saveApproximationSet
 from Indicators.SPD import SPD
 from Indicators.MMD import MMD
+from Indicators.PD import PD
 
 
 
 PPF = "RSE"
 ITERS = 10000
-QI = "SPD"
 RUNS = 21
 CARD_GROUND_SET = [10000,]
 SEQ = ["best", "median", "worst"]
@@ -68,15 +68,21 @@ def _run_validation(type_seq, problem, m, ppf, subset_size, iterations, QI, runs
             evaluation.append(SPD(Sprime))
         elif QI == 'MMD':
             evaluation.append(MMD(Sprime))
+        elif QI == 'PD':
+            evaluation.append(PD(Sprime))
         saveApproximationSet(S, ppf, type_seq, m, problem, subset_size, run, seq_file, 'save_txt')
         
     name, _ = os.path.splitext(seq_file)
     md5_hash = hashlib.md5(name.encode()).hexdigest()
-    np.savetxt(f'Results/Performance/{type_seq}_'+problem+'_ss{0:0=d}_{1:0=2d}D'.format(subset_size, m)+'_'+md5_hash+'.'+QI.lower(), evaluation, fmt='%.18e', header=str(len(evaluation))+' 1')
+    np.savetxt(f'Results/Performance/{type_seq}_'+problem+'_ss{0:0=d}_{1:0=2d}D'.format(subset_size, m)+'_'+md5_hash+'.'+QI.lower(), 
+               evaluation, 
+               fmt='%.18e', 
+               header=str(len(evaluation))+' 1')
+    
 
 
 
-def validate(sequence_file, nobj):
+def validate(sequence_file, nobj, QI):
     problems = PROBLEMS[nobj]    
     for problem, card, type_seq, ss_size in product(
         problems,

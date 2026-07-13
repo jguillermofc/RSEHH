@@ -3,6 +3,7 @@ import numpy as np
 import argparse
 import datetime
 import os
+from time import perf_counter
 
 from Public.Population import population
 from Public.RandomPopulation import randomPopulation
@@ -28,7 +29,19 @@ distances_list = ['euclidean', 'jensenshannon',
                   'cosine']
 
 
+def save_exec_time(args, times):
+    """
+    Save execution times to a file.
 
+    Parameters
+    ----------
+    args : Namespace
+        Parsed arguments from argparse.
+    times : list of float
+        List of execution times for each run.
+    """
+    fname_time = build_filename(args, file_type="ExecutionTime", ext="dat", add_timestamp=False)
+    np.savetxt(fname_time, times, fmt='%.8e', header=str(len(times)))
 
 def save_results(args, P, run):
     N, n = np.shape(P.decision)
@@ -87,7 +100,7 @@ def build_filename(args, file_type="Population", run_id=None, ext="txt", add_tim
 
     return os.path.join(outdir, fname)
 
-def GA(N, n, max_generations, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs, fitness_type):
+def GA(N, n, max_generations, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs, fitness_type, run_ga=None):
     """Runs main framework of GA"""
     print('Initialization')
     
@@ -96,7 +109,7 @@ def GA(N, n, max_generations, training_problems, training_sets, distances_list, 
     P = randomPopulation(N, n, lb, ub, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)
     generations = 0
     while generations < max_generations:
-        print('Generation', generations+1)
+        print(f"Run {run_ga} - Generation", generations+1)
         M = matingSelection(P, N)
         Q = generateOffspring(M, N, lb, ub, pc, pm, training_problems, training_sets, distances_list, ppf, subset_size, iterations, indicator, runs)
         R = population(np.vstack((P.decision, Q.decision)), np.vstack((P.evaluation, Q.evaluation)))
@@ -110,9 +123,11 @@ def execute_hyperheuristic(params):
     print('Population size:', params.N, '| Windows:', params.n, '| Generations:', params.Gmax, 
             '| Set size:', params.M, '| Objectives:', params.m, '| PPF:', params.ppf, '| Subset size:', params.subset_size, '| Iterations:', params.iterations, 
             '| Indicator:', params.QI, '| Runs per evaluation:', params.runs_ss, '| Fitness:', params.fitness, '| Runs GA:', params.runs_ga)
+    times = []
     for run_ga in range(1, params.runs_ga + 1):
         print(f"*********** Genetic Algorithm - Run {run_ga} ***********")
         np.random.seed(run_ga)  # For reproducibility
+        start = perf_counter()
         P = GA(params.N, 
             params.n, 
             params.Gmax, 
@@ -124,8 +139,12 @@ def execute_hyperheuristic(params):
             params.iterations, 
             params.QI, 
             params.runs_ss, 
-            params.fitness)
+            params.fitness,
+            run_ga=run_ga)
+        end = perf_counter()
+        times.append(end - start)
         save_results(params, P, run_ga)
+    save_exec_time(params, times)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Hyper-heuristic to select distance metric for Riesz s-kernel during subset selection (RSEIterative).")
