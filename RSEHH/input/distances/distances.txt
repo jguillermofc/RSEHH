@@ -1,0 +1,6 @@
+euclidean
+jensenshannon
+cityblock
+chebyshev
+braycurtis
+cosine
