@@ -28,13 +28,16 @@ param_set = [# Changing the core indicator of SDD
             # Caso 3: Varying the length of the time window.
             #Parameters("RSE", N=10, n=10, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
             #Parameters("RSE", N=10, n=20, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
-            Parameters("RSE", N=10, n=50, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
-            Parameters("RSE", N=10, n=100, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
+            #Parameters("RSE", N=10, n=50, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
+            #Parameters("RSE", N=10, n=100, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
             #NO EJECUTAR #Parameters("RSE", N=10, n=200, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
             #NO EJECUTAR #Parameters("RSE", N=10, n=500, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
-            Parameters("RSE", N=10, n=1000, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
+            #Parameters("RSE", N=10, n=1000, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
             #NO EJECUTAR #Parameters("RSE", N=10, n=5000, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
-            Parameters("RSE", N=10, n=10000, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5)
+            Parameters("RSE", N=10, n=10000, Gmax=100, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5),
+            
+            # Caso 2 (Faltante) -- Mucho más costoso computacionalmente, por lo que se deja para el final. Varying the population size (N).
+            Parameters("RSE", N=100, n=100, Gmax=1000, M=10000, m=3, subset_size=100, iterations=10000, QI="SPD", runs_ss=11, fitness="SDD", runs_ga=5)
 
 ]
 
